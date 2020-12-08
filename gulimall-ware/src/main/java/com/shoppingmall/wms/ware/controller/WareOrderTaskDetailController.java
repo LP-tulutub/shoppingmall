@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +61,8 @@ public class WareOrderTaskDetailController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:wareordertaskdetail:save")
     public R save(@RequestBody WareOrderTaskDetailEntity wareOrderTaskDetail){
+        if (wareOrderTaskDetail == null) return R.error("存储内容不能为空");
+        else wareOrderTaskDetail.setId(MySnowflakeId.snowflakeWare.nextId());
 		wareOrderTaskDetailService.save(wareOrderTaskDetail);
 
         return R.ok();

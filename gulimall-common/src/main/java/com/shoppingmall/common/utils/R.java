@@ -8,6 +8,8 @@
 
 package com.shoppingmall.common.utils;
 
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.json.JSONUtil;
 import org.apache.http.HttpStatus;
 
 import java.util.HashMap;
@@ -60,5 +62,31 @@ public class R extends HashMap<String, Object> {
 	public R put(String key, Object value) {
 		super.put(key, value);
 		return this;
+	}
+
+	public  Integer getCode() {
+
+		return (Integer) this.get("code");
+	}
+
+	public R setData(Object data) {
+		put("data", data);
+		return this;
+	}
+
+	// 进行反序列化
+	public <T> T getData(TypeReference<T> typeReference) {
+		Object data = get("data");
+		String jsonString = JSONUtil.toJsonStr(data);
+		T t = JSONUtil.toBean(jsonString, typeReference, false);
+		return t;
+	}
+
+	// 进行反序列化
+	public <T> T getData(String key, TypeReference<T> typeReference) {
+		Object data = get(key);	//默认是map
+		String jsonString = JSONUtil.toJsonStr(data);
+		T t = JSONUtil.toBean(jsonString, typeReference, false);
+		return t;
 	}
 }

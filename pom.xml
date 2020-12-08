@@ -19,6 +19,7 @@
     <module>gulimall-product</module>
     <module>gulimall-ware</module>
     <module>gulimall-third-party</module>
+      <module>gulimall-search</module>
   </modules>
 
   <name>Maven</name>
@@ -47,6 +48,8 @@
     <seata-spring-boot-starter.version>1.2.0</seata-spring-boot-starter.version>
     <httpcore.version>4.4.13</httpcore.version>
     <commons.lang.version>2.6</commons.lang.version>
+    <jackson-databind.version>2.11.3</jackson-databind.version>
+    <aliyun-oss.version>2.2.0.RELEASE</aliyun-oss.version>
   </properties>
 
   <dependencyManagement>
@@ -77,6 +80,12 @@
         <groupId>cn.hutool</groupId>
         <artifactId>hutool-all</artifactId>
         <version>${hutool-all.version}</version>
+      </dependency>
+      <!-- jackson-databind -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-databind.version}</version>
       </dependency>
       <!-- redisson -->
       <dependency>
@@ -153,6 +162,12 @@
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>${commons.lang.version}</version>
+      </dependency>
+      <!-- 阿里云对象存储 OSS -->
+      <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+        <version>${aliyun-oss.version}</version>
       </dependency>
 
     </dependencies>

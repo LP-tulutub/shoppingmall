@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +61,8 @@ public class AttrAttrgroupRelationController {
     @RequestMapping("/save")
     //@RequiresPermissions("product:attrattrgrouprelation:save")
     public R save(@RequestBody AttrAttrgroupRelationEntity attrAttrgroupRelation){
+        if (attrAttrgroupRelation.getId() == null)
+            attrAttrgroupRelation.setId(MySnowflakeId.snowflakeProduct.nextId());
 		attrAttrgroupRelationService.save(attrAttrgroupRelation);
 
         return R.ok();

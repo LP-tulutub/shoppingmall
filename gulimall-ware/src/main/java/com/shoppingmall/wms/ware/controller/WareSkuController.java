@@ -1,15 +1,14 @@
 package com.shoppingmall.wms.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.to.SkuHasStockVo;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.wms.ware.entity.WareSkuEntity;
 import com.shoppingmall.wms.ware.service.WareSkuService;
@@ -32,6 +31,18 @@ public class WareSkuController {
     private WareSkuService wareSkuService;
 
     /**
+     * 查询sku是否有库存
+     * @return
+     */
+    @PostMapping(value = "/hasStock")
+    public R getSkuHasStock(@RequestBody List<Long> skuIds) {
+        List<SkuHasStockVo> vos = wareSkuService.getSkuHasStock(skuIds);
+
+        return R.ok().setData(vos);
+
+    }
+
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -42,6 +53,12 @@ public class WareSkuController {
         return R.ok().put("page", page);
     }
 
+    @RequestMapping("/where/list")
+    public R whereList(@RequestParam Map<String, Object> params){
+        PageUtils page = wareSkuService.whereQueryPage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
@@ -60,6 +77,8 @@ public class WareSkuController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:waresku:save")
     public R save(@RequestBody WareSkuEntity wareSku){
+        if (wareSku == null) return R.error("存储内容不能为空");
+        else wareSku.setId(MySnowflakeId.snowflakeWare.nextId());
 		wareSkuService.save(wareSku);
 
         return R.ok();

@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -23,15 +26,18 @@ public class PurchaseDetailEntity implements Serializable {
 	/**
 	 * 
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long id;
 	/**
 	 * 采购单id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long purchaseId;
 	/**
 	 * 采购商品id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long skuId;
 	/**
 	 * 采购数量
@@ -44,6 +50,7 @@ public class PurchaseDetailEntity implements Serializable {
 	/**
 	 * 仓库id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long wareId;
 	/**
 	 * 状态[0新建，1已分配，2正在采购，3已完成，4采购失败]

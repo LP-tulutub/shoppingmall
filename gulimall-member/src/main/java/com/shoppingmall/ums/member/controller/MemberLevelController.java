@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.hutool.core.util.IdUtil;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +62,8 @@ public class MemberLevelController {
     @RequestMapping("/save")
     //@RequiresPermissions("member:memberlevel:save")
     public R save(@RequestBody MemberLevelEntity memberLevel){
+        if (memberLevel == null || memberLevel.getId() == null)
+            memberLevel.setId(MySnowflakeId.snowflakeMember.nextId());
 		memberLevelService.save(memberLevel);
 
         return R.ok();

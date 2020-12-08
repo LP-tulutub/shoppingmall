@@ -1,10 +1,14 @@
 package com.shoppingmall.pms.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,15 +26,18 @@ public class CategoryBrandRelationEntity implements Serializable {
 	/**
 	 * 
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long id;
 	/**
 	 * 品牌id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long brandId;
 	/**
 	 * 分类id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long catelogId;
 	/**
 	 * 

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,12 @@ public class PurchaseDetailController {
         return R.ok().put("page", page);
     }
 
+    @RequestMapping("/search/list")
+    public R searchList(@RequestParam Map<String, Object> params){
+        PageUtils page = purchaseDetailService.searchQueryPage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
@@ -60,6 +67,8 @@ public class PurchaseDetailController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:purchasedetail:save")
     public R save(@RequestBody PurchaseDetailEntity purchaseDetail){
+        if (purchaseDetail == null) return R.error("存储内容不能为空");
+        else purchaseDetail.setId(MySnowflakeId.snowflakeWare.nextId());
 		purchaseDetailService.save(purchaseDetail);
 
         return R.ok();

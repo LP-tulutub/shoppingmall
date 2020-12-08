@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -23,11 +26,13 @@ public class SkuInfoEntity implements Serializable {
 	/**
 	 * skuId
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long skuId;
 	/**
 	 * spuId
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long spuId;
 	/**
 	 * sku名称
@@ -40,10 +45,12 @@ public class SkuInfoEntity implements Serializable {
 	/**
 	 * 所属分类id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long catalogId;
 	/**
 	 * 品牌id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long brandId;
 	/**
 	 * 默认图片
@@ -64,6 +71,7 @@ public class SkuInfoEntity implements Serializable {
 	/**
 	 * 销量
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long saleCount;
 
 }

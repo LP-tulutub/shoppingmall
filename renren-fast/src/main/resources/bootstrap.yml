@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: renren-fast
+  cloud:
+    nacos:
+      server-addr: 192.168.200.10 # Nacos 服务注册中心地址，keepactived 虚拟地址
+      username: nacos
+      password: nacos
+      discovery:
+        group: DEV_GROUP # # dev 表示开发环境；test 表示测试环境
+        namespace: ba1ce61a-1505-4ffb-8421-52ac3cae1dd1
+      config:
+        name: config
+        file-extension: yaml
+        group: DEV_GROUP
+        namespace: ba1ce61a-1505-4ffb-8421-52ac3cae1dd1

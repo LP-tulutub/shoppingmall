@@ -1,10 +1,14 @@
 package com.shoppingmall.pms.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,6 +26,7 @@ public class AttrEntity implements Serializable {
 	/**
 	 * 属性id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long attrId;
 	/**
@@ -51,6 +56,7 @@ public class AttrEntity implements Serializable {
 	/**
 	 * 所属分类
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long catelogId;
 	/**
 	 * 快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整

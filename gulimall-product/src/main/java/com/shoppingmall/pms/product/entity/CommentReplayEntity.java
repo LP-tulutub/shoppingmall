@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,15 +25,18 @@ public class CommentReplayEntity implements Serializable {
 	/**
 	 * id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long id;
 	/**
 	 * 评论id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long commentId;
 	/**
 	 * 回复id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long replyId;
 
 }

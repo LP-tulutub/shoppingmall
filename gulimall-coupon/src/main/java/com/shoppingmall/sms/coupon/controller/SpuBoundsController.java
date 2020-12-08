@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.hutool.core.bean.BeanUtil;
+import com.shoppingmall.common.to.SpuBoundTo;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.sms.coupon.entity.SpuBoundsEntity;
 import com.shoppingmall.sms.coupon.service.SpuBoundsService;
@@ -61,6 +60,16 @@ public class SpuBoundsController {
     //@RequiresPermissions("coupon:spubounds:save")
     public R save(@RequestBody SpuBoundsEntity spuBounds){
 		spuBoundsService.save(spuBounds);
+
+        return R.ok();
+    }
+
+    @PostMapping("/many/save")
+    public R manySave(@RequestBody SpuBoundTo spuBoundTo){
+        SpuBoundsEntity spuBounds = new SpuBoundsEntity();
+        BeanUtil.copyProperties(spuBoundTo, spuBounds);
+        spuBounds.setId(MySnowflakeId.snowflakeCoupon.nextId());
+        spuBoundsService.save(spuBounds);
 
         return R.ok();
     }

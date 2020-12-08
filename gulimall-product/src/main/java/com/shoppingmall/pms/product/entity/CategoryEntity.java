@@ -1,10 +1,13 @@
 package com.shoppingmall.pms.product.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -14,6 +17,7 @@ import lombok.Data;
  * @email 347863282@qq.cpm
  * @date 2020-11-02 13:41:28
  */
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 @Data
 @TableName("pms_category")
 public class CategoryEntity implements Serializable {
@@ -22,6 +26,7 @@ public class CategoryEntity implements Serializable {
 	/**
 	 * 分类id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class )
 	@TableId
 	private Long catId;
 	/**
@@ -31,6 +36,7 @@ public class CategoryEntity implements Serializable {
 	/**
 	 * 父分类id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long parentCid;
 	/**
 	 * 层级
@@ -39,6 +45,7 @@ public class CategoryEntity implements Serializable {
 	/**
 	 * 是否显示[0-不显示，1显示]
 	 */
+	@TableLogic(value = "1", delval = "0")
 	private Integer showStatus;
 	/**
 	 * 排序
@@ -56,5 +63,9 @@ public class CategoryEntity implements Serializable {
 	 * 商品数量
 	 */
 	private Integer productCount;
+
+	//@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+	@TableField(exist = false)
+	private List<CategoryEntity> Children;
 
 }

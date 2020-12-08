@@ -1,10 +1,15 @@
 package com.shoppingmall.pms.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
-import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongArrSerializer;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,6 +27,7 @@ public class AttrGroupEntity implements Serializable {
 	/**
 	 * 分组id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class )
 	@TableId
 	private Long attrGroupId;
 	/**
@@ -43,6 +49,10 @@ public class AttrGroupEntity implements Serializable {
 	/**
 	 * 所属分类id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long catelogId;
 
+	@JsonSerialize(using = JsonLongArrSerializer.class )
+	@TableField(exist = false)
+	private Long[] catelogIdPath;
 }

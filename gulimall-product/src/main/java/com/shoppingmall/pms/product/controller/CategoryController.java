@@ -1,15 +1,18 @@
 package com.shoppingmall.pms.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.api.naming.pojo.AbstractHealthChecker;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.pms.product.entity.CategoryEntity;
 import com.shoppingmall.pms.product.service.CategoryService;
@@ -42,6 +45,13 @@ public class CategoryController {
         return R.ok().put("page", page);
     }
 
+    @RequestMapping("/list/tree")
+    public R listTree(){
+        List<CategoryEntity> categoryEntities = this.categoryService.listWithTree();
+        R r = new R();
+        r.put("data", categoryEntities);
+        return r;
+    }
 
     /**
      * 信息
@@ -60,6 +70,8 @@ public class CategoryController {
     @RequestMapping("/save")
     //@RequiresPermissions("product:category:save")
     public R save(@RequestBody CategoryEntity category){
+        if (category.getCatId() == null)
+            category.setCatId(MySnowflakeId.snowflakeProduct.nextId());
 		categoryService.save(category);
 
         return R.ok();
@@ -73,6 +85,23 @@ public class CategoryController {
     public R update(@RequestBody CategoryEntity category){
 		categoryService.updateById(category);
 
+        return R.ok();
+    }
+
+    @PostMapping("/redundancy/update")
+    public R redundancyUpdate(@RequestBody CategoryEntity category){
+        categoryService.redundancyUpdateById(category);
+        return R.ok();
+    }
+
+
+    /**
+     * 修改数组量
+     */
+    @RequestMapping("/update/arr")
+    public R updateArrByIds(@RequestBody CategoryEntity[] categoryArr){
+        Integer value = categoryService.updateArrById(Arrays.asList(categoryArr));
+        if (value != categoryArr.length) return R.error();
         return R.ok();
     }
 

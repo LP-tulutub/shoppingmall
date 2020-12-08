@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,11 +25,13 @@ public class WareOrderTaskDetailEntity implements Serializable {
 	/**
 	 * id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long id;
 	/**
 	 * sku_id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long skuId;
 	/**
 	 * sku_name
@@ -39,6 +44,7 @@ public class WareOrderTaskDetailEntity implements Serializable {
 	/**
 	 * 工作单id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long taskId;
 
 }

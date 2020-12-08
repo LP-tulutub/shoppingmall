@@ -1,21 +1,25 @@
 package com.shoppingmall.pms.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
+import com.shoppingmall.pms.product.entity.BrandEntity;
+import com.shoppingmall.pms.product.service.BrandService;
+import com.shoppingmall.pms.product.service.CategoryService;
+import com.shoppingmall.pms.product.vo.BrandVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.pms.product.entity.CategoryBrandRelationEntity;
 import com.shoppingmall.pms.product.service.CategoryBrandRelationService;
 import com.shoppingmall.common.utils.PageUtils;
 import com.shoppingmall.common.utils.R;
 
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -30,6 +34,10 @@ import com.shoppingmall.common.utils.R;
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
+    @Autowired
+    private BrandService brandService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 列表
@@ -42,6 +50,29 @@ public class CategoryBrandRelationController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/catelog/list")
+    public R catelogList(@RequestParam Map<String, Object> params){
+        Long brandId = Long.parseLong((String) params.get("brandId"));
+        List<CategoryBrandRelationEntity> entityList = categoryBrandRelationService.queryByBrandId(brandId);
+
+        return R.ok().put("data", entityList);
+    }
+
+    @GetMapping("/brands/list")
+    public R relationBrandsList(@RequestParam(value = "catId",required = true)Long catId){
+        List<BrandEntity> vos = categoryBrandRelationService.getBrandsByCatId(catId);
+
+        List<BrandVo> collect = vos.stream().map(item -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(item.getBrandId());
+            brandVo.setBrandName(item.getName());
+
+            return brandVo;
+        }).collect(Collectors.toList());
+
+        return R.ok().put("data",collect);
+
+    }
 
     /**
      * 信息
@@ -60,7 +91,20 @@ public class CategoryBrandRelationController {
     @RequestMapping("/save")
     //@RequiresPermissions("product:categorybrandrelation:save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
+        if (categoryBrandRelation.getId() == null)
+            categoryBrandRelation.setId(MySnowflakeId.snowflakeProduct.nextId());
 		categoryBrandRelationService.save(categoryBrandRelation);
+
+        return R.ok();
+    }
+
+    @PostMapping("/catelog/save")
+    public R catelogSave(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
+        String brandName = this.brandService.getById(categoryBrandRelation.getBrandId()).getName();
+        String categoryName = this.categoryService.getById(categoryBrandRelation.getCatelogId()).getName();
+        categoryBrandRelation.setBrandName(brandName);
+        categoryBrandRelation.setCatelogName(categoryName);
+        this.categoryBrandRelationService.save(categoryBrandRelation);
 
         return R.ok();
     }

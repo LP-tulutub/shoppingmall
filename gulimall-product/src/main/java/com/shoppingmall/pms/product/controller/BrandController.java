@@ -1,10 +1,15 @@
 package com.shoppingmall.pms.product.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +21,7 @@ import com.shoppingmall.pms.product.service.BrandService;
 import com.shoppingmall.common.utils.PageUtils;
 import com.shoppingmall.common.utils.R;
 
+import javax.validation.Valid;
 
 
 /**
@@ -59,9 +65,10 @@ public class BrandController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:brand:save")
-    public R save(@RequestBody BrandEntity brand){
-		brandService.save(brand);
-
+    public R save(@Valid @RequestBody BrandEntity brand){
+        if (brand.getBrandId() == null)
+            brand.setBrandId(MySnowflakeId.snowflakeProduct.nextId());
+        brandService.save(brand);
         return R.ok();
     }
 
@@ -75,6 +82,14 @@ public class BrandController {
 
         return R.ok();
     }
+
+    @RequestMapping("/redundancy/update")
+    public R redundancyUpdate(@RequestBody BrandEntity brand){
+        brandService.redundancyUpdateById(brand);
+
+        return R.ok();
+    }
+
 
     /**
      * 删除

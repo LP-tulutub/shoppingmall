@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shoppingmall.common.config.JsonLongSerializer;
 import lombok.Data;
 
 /**
@@ -22,11 +25,13 @@ public class SkuImagesEntity implements Serializable {
 	/**
 	 * id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	@TableId
 	private Long id;
 	/**
 	 * sku_id
 	 */
+	@JsonSerialize(using = JsonLongSerializer.class)
 	private Long skuId;
 	/**
 	 * 图片地址

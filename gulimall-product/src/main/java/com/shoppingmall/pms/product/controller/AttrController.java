@@ -1,21 +1,26 @@
 package com.shoppingmall.pms.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.hutool.core.bean.BeanUtil;
+import com.shoppingmall.common.utils.MySnowflakeId;
+import com.shoppingmall.pms.product.entity.AttrAttrgroupRelationEntity;
+import com.shoppingmall.pms.product.entity.ProductAttrValueEntity;
+import com.shoppingmall.pms.product.service.AttrAttrgroupRelationService;
+import com.shoppingmall.pms.product.service.ProductAttrValueService;
+import com.shoppingmall.pms.product.vo.AttrRespVo;
+import com.shoppingmall.pms.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.pms.product.entity.AttrEntity;
 import com.shoppingmall.pms.product.service.AttrService;
 import com.shoppingmall.common.utils.PageUtils;
 import com.shoppingmall.common.utils.R;
-
 
 
 /**
@@ -30,6 +35,21 @@ import com.shoppingmall.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
+
+    /**
+     *  获取spu规格
+     */
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrlistforspu(@PathVariable("spuId") Long spuId){
+
+        List<ProductAttrValueEntity> entities = productAttrValueService.baseAttrListforspu(spuId);
+
+        return R.ok().put("data",entities);
+    }
 
     /**
      * 列表
@@ -42,6 +62,12 @@ public class AttrController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/{attrType}/list/{catelogId}")
+    public R baseList(@RequestParam Map<String, Object> params, @PathVariable Long catelogId, @PathVariable("attrType") String type){
+        PageUtils page = attrService.baseQueryPage(params, catelogId, type);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
@@ -49,9 +75,16 @@ public class AttrController {
     @RequestMapping("/info/{attrId}")
     //@RequiresPermissions("product:attr:info")
     public R info(@PathVariable("attrId") Long attrId){
-		AttrEntity attr = attrService.getById(attrId);
+        AttrEntity attr = attrService.getById(attrId);
 
         return R.ok().put("attr", attr);
+    }
+
+    @GetMapping("/relation/info/{attrId}")
+    public R relationInfo(@PathVariable("attrId") Long attrId){
+		AttrRespVo attrRespVo = attrService.relationGetById(attrId);
+
+        return R.ok().put("attr", attrRespVo);
     }
 
     /**
@@ -60,7 +93,31 @@ public class AttrController {
     @RequestMapping("/save")
     //@RequiresPermissions("product:attr:save")
     public R save(@RequestBody AttrEntity attr){
+        if (attr.getAttrId() == null)
+            attr.setAttrId(MySnowflakeId.snowflakeProduct.nextId());
 		attrService.save(attr);
+
+        return R.ok();
+    }
+
+    @Transactional
+    @PostMapping("/relation/save")
+    public R relationSave(@RequestBody AttrVo attrVO){
+        AttrEntity attrEntity = new AttrEntity();
+        BeanUtil.copyProperties(attrVO, attrEntity, "attrGroupId");
+
+        Long attrSnowflakeId = MySnowflakeId.snowflakeProduct.nextId();
+        attrEntity.setAttrId(attrSnowflakeId);
+
+        this.attrService.save(attrEntity);
+        if (attrVO.getAttrType() == 1){
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            relationEntity.setId(MySnowflakeId.snowflakeProduct.nextId());
+            relationEntity.setAttrId(attrSnowflakeId);
+            relationEntity.setAttrGroupId(attrVO.getAttrGroupId());
+
+            this.attrAttrgroupRelationService.save(relationEntity);
+        }
 
         return R.ok();
     }
@@ -72,6 +129,13 @@ public class AttrController {
     //@RequiresPermissions("product:attr:update")
     public R update(@RequestBody AttrEntity attr){
 		attrService.updateById(attr);
+
+        return R.ok();
+    }
+
+    @PostMapping("/relation/update")
+    public R relationUpdate(@RequestBody AttrVo attrVo){
+        attrService.relationUpdateById(attrVo);
 
         return R.ok();
     }

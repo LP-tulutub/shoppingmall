@@ -5,7 +5,7 @@ spring:
   application:
     name: gulimall-ware
   profiles:
-    active: shardingsphere-wms,mybatisplus,shardingsphere-druid,gulimall-ware
+    active: shardingsphere-wms,mybatisplus,shardingsphere-druid,springboot,gulimall-ware
   cloud:
     nacos:
       server-addr: 192.168.200.10 # Nacos 服务注册中心地址，keepactived 虚拟地址

@@ -4,12 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.shoppingmall.common.utils.MySnowflakeId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.shoppingmall.wms.ware.entity.WareInfoEntity;
 import com.shoppingmall.wms.ware.service.WareInfoService;
@@ -42,6 +39,12 @@ public class WareInfoController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/search/list")
+    public R searchList(@RequestParam Map<String, Object> params){
+        PageUtils page = wareInfoService.searchQueryPage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
@@ -60,6 +63,8 @@ public class WareInfoController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:wareinfo:save")
     public R save(@RequestBody WareInfoEntity wareInfo){
+        if (wareInfo == null) return R.error("存储内容不能为空");
+        else wareInfo.setId(MySnowflakeId.snowflakeWare.nextId());
 		wareInfoService.save(wareInfo);
 
         return R.ok();
